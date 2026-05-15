@@ -85,6 +85,11 @@ def plot_parameter_heatmap(
     ax.set_xticklabels([str(col) for col in heatmap_data.columns])
     ax.set_yticks(range(len(heatmap_data.index)))
     ax.set_yticklabels([str(idx) for idx in heatmap_data.index])
+    for row_idx, lookback in enumerate(heatmap_data.index):
+        for col_idx, cost_bps in enumerate(heatmap_data.columns):
+            value = heatmap_data.loc[lookback, cost_bps]
+            if pd.notna(value):
+                ax.text(col_idx, row_idx, f"{value:.2f}", ha="center", va="center", fontsize=8)
     ax.set_xlabel("Transaction Cost (bps)")
     ax.set_ylabel("Lookback (days)")
     ax.set_title("Parameter Robustness: Sharpe Ratio")

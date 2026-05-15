@@ -49,3 +49,20 @@ def test_multi_asset_active_weights_sum_to_one_when_assets_are_active():
     active_rows = weights.sum(axis=1) > 0
 
     assert np.allclose(weights.loc[active_rows].sum(axis=1), 1.0)
+
+
+def test_multi_asset_benchmark_is_buy_and_hold_not_daily_rebalanced():
+    idx = pd.date_range("2020-01-01", periods=3)
+    close = pd.DataFrame(
+        {
+            "AAA": [100.0, 200.0, 100.0],
+            "BBB": [100.0, 100.0, 100.0],
+        },
+        index=idx,
+    )
+
+    output = multi_asset_tsmom(close, lookback=1, cost_bps=0)
+    results = output["results"]
+
+    assert results.loc[idx[1], "benchmark_equity"] == pytest.approx(1.5)
+    assert results.loc[idx[2], "benchmark_return"] == pytest.approx(-1.0 / 3.0)

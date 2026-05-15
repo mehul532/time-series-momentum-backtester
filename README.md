@@ -58,7 +58,7 @@ src/tsmom/
 ## Quick Start
 
 ```bash
-python -m pip install -e .
+python -m pip install -e ".[dev]"
 python -m pytest
 python -m compileall src scripts
 python -m tsmom.cli --help
@@ -112,7 +112,7 @@ The multi-asset script uses:
 
 `SPY, QQQ, IWM, TLT, IEF, GLD, DBC, EFA, EEM, VNQ`
 
-Signals are generated independently for each ETF. Active ETFs receive equal weight after signals are shifted. If no ETF is active, the strategy holds cash. The benchmark is an equal-weight buy-and-hold basket.
+Signals are generated independently for each ETF. Active ETFs receive equal weight after signals are shifted. If no ETF is active, the strategy holds cash. The benchmark is an equal-initial-weight buy-and-hold basket over the common ETF history.
 
 ## Limitations
 

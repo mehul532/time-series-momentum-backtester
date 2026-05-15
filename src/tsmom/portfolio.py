@@ -43,6 +43,22 @@ def build_vol_target_portfolio(
     )
 
 
+def _equal_weight_buy_hold_benchmark(close: pd.DataFrame) -> pd.DataFrame:
+    """Build an equal-initial-weight buy-and-hold benchmark."""
+
+    normalized = close.div(close.iloc[0])
+    equity = normalized.mean(axis=1)
+    equity = equity / equity.iloc[0]
+    returns = equity.pct_change(fill_method=None).fillna(0.0)
+    return pd.DataFrame(
+        {
+            "benchmark_return": returns,
+            "benchmark_equity": equity,
+        },
+        index=close.index,
+    )
+
+
 def multi_asset_tsmom(
     close_df: pd.DataFrame,
     lookback: int = 252,
@@ -56,7 +72,10 @@ def multi_asset_tsmom(
     active, the portfolio holds cash for that day.
     """
 
-    close = close_df.sort_index().astype(float)
+    close = close_df.sort_index().astype(float).dropna(axis=1, how="all").dropna(how="any")
+    if close.empty:
+        raise ValueError("close_df must contain a common non-missing price history.")
+
     asset_returns_raw = close.pct_change(fill_method=None)
     asset_returns = asset_returns_raw.fillna(0.0)
     signals = trailing_return_signal(close, lookback=lookback)
@@ -66,14 +85,14 @@ def multi_asset_tsmom(
     turnover = compute_turnover(weights)
     cost = turnover * (float(cost_bps) / 10_000.0)
     strategy_returns = (weights * asset_returns).sum(axis=1) - cost
-    benchmark_returns = asset_returns_raw.mean(axis=1, skipna=True).fillna(0.0)
+    benchmark = _equal_weight_buy_hold_benchmark(close)
 
     results = pd.DataFrame(
         {
             "strategy_return": strategy_returns,
-            "benchmark_return": benchmark_returns,
+            "benchmark_return": benchmark["benchmark_return"],
             "strategy_equity": (1.0 + strategy_returns).cumprod(),
-            "benchmark_equity": (1.0 + benchmark_returns).cumprod(),
+            "benchmark_equity": benchmark["benchmark_equity"],
             "turnover": turnover,
             "active_assets": positions.sum(axis=1),
         },
