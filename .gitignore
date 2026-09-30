@@ -11,3 +11,19 @@ data/processed/*
 .DS_Store
 reports/figures/*
 !reports/figures/.gitkeep
+
+# Standard Python tooling
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+.cache/
+dist/
+build/
+.mypy_cache/
+.ruff_cache/
+.vscode/
+.idea/
+*.swp
+*.swo
