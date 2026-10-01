@@ -11,6 +11,9 @@ data/processed/*
 .DS_Store
 reports/figures/*
 !reports/figures/.gitkeep
+!reports/figures/spy_cumulative.png
+!reports/figures/parameter_sweep.png
+reports/*.csv
 
 # Standard Python tooling
 *.py[cod]

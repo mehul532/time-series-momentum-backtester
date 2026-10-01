@@ -95,6 +95,16 @@ The scripts produce reproducible artifacts such as:
 - `reports/figures/parameter_heatmap.png`
 - `reports/figures/multi_asset_exposures.png`
 
+The figures below use Yahoo Finance adjusted daily SPY closes from January 3, 2000 through September 30, 2026. The baseline uses a 252 trading-day lookback, a one-day signal lag, 5 bps per position change, and zero cash return. The sweep uses the same price history.
+
+SPY momentum strategy versus buy-and-hold, shown as growth of $1:
+
+![SPY cumulative strategy and buy-and-hold equity curves](reports/figures/spy_cumulative.png)
+
+Annualized Sharpe ratios across momentum lookbacks and transaction costs:
+
+![SPY parameter sweep Sharpe ratio heatmap](reports/figures/parameter_sweep.png)
+
 The exact numbers depend on the data available from Yahoo Finance at run time, the sample period, transaction-cost assumptions, and selected parameters.
 
 ## Robustness Tests
